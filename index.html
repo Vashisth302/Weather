@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Weather App</title>
+
+  <!-- Poppins + Font Awesome (use HTTPS) -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="api.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h2><i class="fa fa-map-marker"></i> <span id="location"></span></h2>
+      <h6 id="weather"></h6>
+
+      <h4>
+        <span id="temp"></span><sup>o</sup><sup>C</sup>
+      </h4>
+
+      <img src="" id="icon" alt="weather icon">
+
+      <button onclick="window.location.reload()" class="refresh" title="Refresh">
+        <i class="fa fa-refresh"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- jQuery (video uses it; not required for the XHR below) -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+          integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+          crossorigin="anonymous"></script>
+
+  <script>
+    // === Replace with your OpenWeatherMap API key ===
+    var API_KEY = "93194c745e247ffee4086bfcd2228235";
+
+    // Use the WEATHER endpoint (not the geocoding endpoint)
+    var url = "https://api.openweathermap.org/data/2.5/weather?q=delhi&appid=" + API_KEY + "&units=metric";
+
+    var request = new XMLHttpRequest();
+    request.open('GET', url, true);
+
+    request.onload = function () {
+      if (request.status >= 200 && request.status < 400) {
+        var obj = JSON.parse(this.response);
+
+        // Fill the UI
+        document.getElementById('location').textContent = obj.name || "—";
+
+        var w = (obj.weather && obj.weather[0]) ? obj.weather[0] : {};
+        document.getElementById('weather').textContent = w.description
+          ? w.description.replace(/\b\w/g, function (m) { return m.toUpperCase(); })
+          : "—";
+
+        var t = obj.main && typeof obj.main.temp === 'number' ? obj.main.temp : 0;
+        document.getElementById('temp').textContent = Math.round(t);
+
+        document.getElementById('icon').src = w.icon
+          ? ("https://openweathermap.org/img/w/" + w.icon + ".png")
+          : "";
+
+      } else {
+        console.log("The city data is not available");
+      }
+    };
+
+    request.onerror = function () {
+      console.log("Request failed");
+    };
+
+    request.send();
+  </script>
+</body>
+</html>
