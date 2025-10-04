@@ -1,77 +1,55 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Weather App</title>
 
-  <!-- Poppins + Font Awesome (use HTTPS) -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 
   <!-- Styles -->
-  <link rel="stylesheet" href="api.css">
+  <link rel="stylesheet" href="api.css" />
 </head>
 <body>
-  <div class="container">
-    <div class="card">
-      <h2><i class="fa fa-map-marker"></i> <span id="location"></span></h2>
-      <h6 id="weather"></h6>
+  <header></header>
 
-      <h4>
-        <span id="temp"></span><sup>o</sup><sup>C</sup>
-      </h4>
+  <main>
+    <section aria-labelledby="title" class="wrap">
+      <h1 id="title" class="visually-hidden">Current Weather</h1>
 
-      <img src="" id="icon" alt="weather icon">
+      <article class="card" aria-live="polite" aria-busy="true">
+        <h2 class="place">
+          <i class="fa fa-map-marker"></i>
+          <span id="location">—</span>
+        </h2>
 
-      <button onclick="window.location.reload()" class="refresh" title="Refresh">
-        <i class="fa fa-refresh"></i>
-      </button>
-    </div>
-  </div>
+        <h6 id="weather" class="desc">—</h6>
 
-  <!-- jQuery (video uses it; not required for the XHR below) -->
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-          integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-          crossorigin="anonymous"></script>
+        <h4 class="temp">
+          <span id="temp">—</span><sup>o</sup><sup>C</sup>
+        </h4>
 
-  <script>
-    // === Replace with your OpenWeatherMap API key ===
-    var API_KEY = "93194c745e247ffee4086bfcd2228235";
+        <img id="icon" alt="Weather icon" src="" />
 
-    // Use the WEATHER endpoint (not the geocoding endpoint)
-    var url = "https://api.openweathermap.org/data/2.5/weather?q=delhi&appid=" + API_KEY + "&units=metric";
+        <ul class="meta">
+          <li>Humidity: <strong><span id="humidity">—</span><span class="unit">%</span></strong></li>
+          <li>Wind: <strong><span id="wind">—</span><span class="unit"> m/s</span></strong></li>
+        </ul>
 
-    var request = new XMLHttpRequest();
-    request.open('GET', url, true);
+        <button id="refreshBtn" class="refresh" title="Refresh latest data">
+          <i class="fa fa-refresh" aria-hidden="true"></i>
+          <span class="visually-hidden">Refresh</span>
+        </button>
+      </article>
+    </section>
+  </main>
 
-    request.onload = function () {
-      if (request.status >= 200 && request.status < 400) {
-        var obj = JSON.parse(this.response);
+  <footer></footer>
 
-        // Fill the UI
-        document.getElementById('location').textContent = obj.name || "—";
-
-        var w = (obj.weather && obj.weather[0]) ? obj.weather[0] : {};
-        document.getElementById('weather').textContent = w.description
-          ? w.description.replace(/\b\w/g, function (m) { return m.toUpperCase(); })
-          : "—";
-
-        var t = obj.main && typeof obj.main.temp === 'number' ? obj.main.temp : 0;
-        document.getElementById('temp').textContent = Math.round(t);
-
-        document.getElementById('icon').src = w.icon
-          ? ("https://openweathermap.org/img/w/" + w.icon + ".png")
-          : "";
-
-      } else {
-        console.log("The city data is not available");
-      }
-    };
-
-    request.onerror = function () {
-      console.log("Request failed");
-    };
-
-    request.send();
-  </script>
+  <!-- Scripts -->
+  <script src="config.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
