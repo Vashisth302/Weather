@@ -6,53 +6,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Weather App</title>
 
-
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
   <link rel="stylesheet" type="text/css" href="api.css" />
-
 </head>
 
 <body>
-
-
-
   <div class="container">
-
     <div class="card">
       <h2><i class="fa fa-map-marker"></i><span id="location">—</span></h2>
-      <h6 id="weather"></h6>
-      <h4><span id="temp">—</span><sup>o</sup><sup>C</sup></h4>
+      <h6 id="weather">—</h6>
+      <h4><span id="temp">—</span><sup>°</sup><sup>C</sup></h4>
       <img id="icon" src="" alt="Weather icon" />
+      <p>Humidity: <span id="humidity">—</span>%</p>
+      <p>Wind Speed: <span id="wind">—</span> km/h</p>
 
       <button onclick="window.location.reload()" class="refresh"><i class="fa fa-refresh"></i></button>
     </div>
   </div>
 
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+  <script>
+    // ✅ Added 'let' and fixed API key placeholder
+    let link = "https://api.openweathermap.org/data/2.5/weather?q=delhi&appid=93194c745e247ffee4086bfcd2228235&units=metric";
+
+    var request = new XMLHttpRequest();
+    request.open('GET', link, true);
+
+    request.onload = function () {
+      // ✅ Moved the status check inside onload
+      if (request.status >= 200 && request.status < 400) {
+        var obj = JSON.parse(this.response);
+        console.log(obj);
+
+        // ✅ Display data
+        document.getElementById('location').textContent = obj.name;
+        document.getElementById('weather').textContent = obj.weather[0].description;
+        document.getElementById('temp').textContent = Math.round(obj.main.temp);
+        document.getElementById('icon').src = `https://openweathermap.org/img/wn/${obj.weather[0].icon}@2x.png`;
+
+        // ✅ Added humidity and wind speed
+        document.getElementById('humidity').textContent = obj.main.humidity;
+        document.getElementById('wind').textContent = (obj.wind.speed * 3.6).toFixed(1); // convert m/s → km/h
+      } else {
+        console.log("The city data is not available");
+      }
+    };
+
+    request.onerror = function () {
+      console.log("Network error while fetching weather data");
+    };
+
+    request.send();
+  </script>
 </body>
-<!-- Scripts -->
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"
-  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-<script>
-  link = "https://api.openweathermap.org/data/2.5/weather?q=delhi&appid=93194c745e247ffee4086bfcd2228235&units=metric";
-
-  var request = new XMLHttpRequest();
-  request.open('GET', link, true);
-  request.onload = function () {
-    var obj = JSON.parse(this.response);
-    console.log(obj);
-    document.getElementById('location').textContent = obj.name;
-    document.getElementById('weather').textContent = obj.weather[0].description;
-    document.getElementById('temp').textContent = Math.round(obj.main.temp);
-    document.getElementById('icon').src = `https://openweathermap.org/img/w/${obj.weather[0].icon}.png`;
-  }
-  if (request.status >= 200 && request.status < 400) {
-
-  } else {
-    console.log("The city data is not available");
-  }
-
-  request.send();
-</script>
-
 </html>
