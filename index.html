@@ -1,55 +1,58 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Weather App</title>
 
-  <!-- Fonts & Icons -->
+
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="api.css" />
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="api.css" />
 </head>
+
 <body>
-  <header></header>
 
-  <main>
-    <section aria-labelledby="title" class="wrap">
-      <h1 id="title" class="visually-hidden">Current Weather</h1>
 
-      <article class="card" aria-live="polite" aria-busy="true">
-        <h2 class="place">
-          <i class="fa fa-map-marker"></i>
-          <span id="location">—</span>
-        </h2>
 
-        <h6 id="weather" class="desc">—</h6>
+  <div class="container">
 
-        <h4 class="temp">
-          <span id="temp">—</span><sup>o</sup><sup>C</sup>
-        </h4>
+    <div class="card">
+      <h2><i class="fa fa-map-marker"></i><span id="location">—</span></h2>
+      <h6 id="weather"></h6>
+      <h4><span id="temp">—</span><sup>o</sup><sup>C</sup></h4>
+      <img id="icon" src="" alt="Weather icon" />
 
-        <img id="icon" alt="Weather icon" src="" />
+      <button onclick="window.location.reload()" class="refresh"><i class="fa fa-refresh"></i></button>
+    </div>
+  </div>
 
-        <ul class="meta">
-          <li>Humidity: <strong><span id="humidity">—</span><span class="unit">%</span></strong></li>
-          <li>Wind: <strong><span id="wind">—</span><span class="unit"> m/s</span></strong></li>
-        </ul>
-
-        <button id="refreshBtn" class="refresh" title="Refresh latest data">
-          <i class="fa fa-refresh" aria-hidden="true"></i>
-          <span class="visually-hidden">Refresh</span>
-        </button>
-      </article>
-    </section>
-  </main>
-
-  <footer></footer>
-
-  <!-- Scripts -->
-  <script src="config.js"></script>
-  <script src="app.js"></script>
 </body>
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script>
+  link = "https://api.openweathermap.org/data/2.5/weather?q=delhi&appid=93194c745e247ffee4086bfcd2228235&units=metric";
+
+  var request = new XMLHttpRequest();
+  request.open('GET', link, true);
+  request.onload = function () {
+    var obj = JSON.parse(this.response);
+    console.log(obj);
+    document.getElementById('location').textContent = obj.name;
+    document.getElementById('weather').textContent = obj.weather[0].description;
+    document.getElementById('temp').textContent = Math.round(obj.main.temp);
+    document.getElementById('icon').src = `https://openweathermap.org/img/w/${obj.weather[0].icon}.png`;
+  }
+  if (request.status >= 200 && request.status < 400) {
+
+  } else {
+    console.log("The city data is not available");
+  }
+
+  request.send();
+</script>
+
 </html>
